@@ -1,0 +1,83 @@
+{
+    "configName": "AARP",
+    "statusBar": {
+        "lockscreen": {
+            "carrier": "Vodafone",
+            "signalBars": 3,
+            "wifiStrength": 2,
+            "showWifi": true,
+            "levelBattery": 0.4,
+            "isCharging": true
+        },
+        "chatview": {
+            "carrier": "Vodafone",
+            "signalBars": 3,
+            "wifiStrength": 2,
+            "showWifi": true,
+            "levelBattery": 0.9,
+            "isCharging": false
+        }
+    },
+    "notifications": [
+        {
+            "appName": "Chrono24",
+            "iconName": "clock.fill",
+            "iconColor": "#000000",
+            "title": "Market Alert",
+            "message": "The market value for your Tissot PRX has updated",
+            "timeAgo": "now"
+        },
+        {
+            "appName": "Mail",
+            "iconName": "envelope.fill",
+            "iconColor": "#007AFF",
+            "title": "Boutique Concierge",
+            "message": "Your private viewing appointment is confirmed",
+            "timeAgo": "10 min"
+        },
+        {
+            "appName": "Calendar",
+            "iconName": "calendar",
+            "iconColor": "#FF3B30",
+            "title": "Auction Event",
+            "message": "Geneva Watch Auction starts in 1 hour",
+            "timeAgo": "45 min"
+        },
+        {
+            "appName": "Messages",
+            "iconName": "message.fill",
+            "iconColor": "#34C759",
+            "title": "Logistics",
+            "message": "Your insured package has cleared customs",
+            "timeAgo": "2 hr"
+        },
+        {
+            "appName": "Bank",
+            "iconName": "building.columns.fill",
+            "iconColor": "#1C1C1E",
+            "title": "Wire Transfer",
+            "message": "International transfer to Switzerland authorized",
+            "timeAgo": "3 hr"
+        }
+    ],
+    "contacts": [
+        {
+            "id": 1,
+            "name": "AARP",
+            "avatar": "https://ui-avatars.com/api/?name=AARP&background=E11B22&color=fff&font-size=0.4&bold=true",
+            "imageURL": "https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=800&q=80"
+        },
+        {
+            "id": 2,
+            "name": "Arthur",
+            "avatar": "https://ui-avatars.com/api/?name=Arthur&background=1C1C1E&color=fff",
+            "imageURL": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=80"
+        },
+        {
+            "id": 3,
+            "name": "Elena",
+            "avatar": "https://ui-avatars.com/api/?name=Elena&background=34C759&color=fff",
+            "imageURL": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80"
+        }
+    ]
+}
