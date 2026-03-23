@@ -64,8 +64,8 @@
         {
             "id": 1,
             "name": "AARP",
-            "avatar": "https://ui-avatars.com/api/?name=AARP&background=E11B22&color=fff&font-size=0.4&bold=true",
-            "imageURL": "https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=800&q=80"
+            "avatar": "https://ios-wrapper-test-kk-de916285ba09.herokuapp.com/resources/phone/WTDC-AARP-2026/AARP-Avatar.png",
+            "imageURL": "https://ios-wrapper-test-kk-de916285ba09.herokuapp.com/resources/phone/WTDC-AARP-2026/AARP-BG.png"
         },
         {
             "id": 2,
