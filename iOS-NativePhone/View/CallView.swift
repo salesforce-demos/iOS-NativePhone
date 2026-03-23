@@ -61,7 +61,7 @@ struct CallView: View {
                         wifiStrength: statusBarPhoneView?.wifiStrength ?? 3,
                         showWifi: statusBarPhoneView?.showWifi ?? true,
                         foregroundColor: .white,
-                        isLockScreen: false,
+                        isLockScreen: true,
                         levelBattery: statusBarPhoneView?.levelBattery ?? 0.8,
                         isCharging: statusBarPhoneView?.isCharging ?? false
                     )

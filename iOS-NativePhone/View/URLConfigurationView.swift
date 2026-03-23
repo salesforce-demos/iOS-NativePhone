@@ -99,7 +99,7 @@ struct URLConfigurationView: View {
                 
                 Button(action: {}) {
                     Text("SignIn")
-                        .font(.system(size: 13, weight: .medium))
+                        .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.white)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 7)
