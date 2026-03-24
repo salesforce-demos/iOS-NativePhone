@@ -55,7 +55,6 @@ struct PhoneView: View {
                 signalBars: vm.statusBarChatView?.signalBars ?? 4,
                 wifiStrength: vm.statusBarChatView?.wifiStrength ?? 3,
                 showWifi: vm.statusBarChatView?.showWifi ?? true,
-                foregroundColor: .black,
                 isLockScreen: true,
                 levelBattery: vm.statusBarChatView?.levelBattery ?? 0.3,
                 isCharging: vm.statusBarChatView?.isCharging ?? false

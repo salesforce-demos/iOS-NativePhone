@@ -13,10 +13,16 @@ struct StatusBar: View {
     var signalBars: Int = 4
     var wifiStrength: Int = 3
     var showWifi: Bool = true
-    var foregroundColor: Color = .primary
+    var foregroundColor: Color? = nil
     var isLockScreen: Bool = false
     var levelBattery: Double = 0.8
     var isCharging: Bool = false
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var resolvedColor: Color {
+        foregroundColor ?? (colorScheme == .dark ? .white : .black)
+    }
 
     var body: some View {
         HStack(alignment: .center) {
@@ -25,7 +31,7 @@ struct StatusBar: View {
                     Spacer().frame(width: 15)
                     Text(carrier)
                         .font(.system(size: 15, weight: .semibold))
-                    CellularSignalView(bars: signalBars, color: foregroundColor)
+                    CellularSignalView(bars: signalBars, color: resolvedColor)
                 }
                 Spacer()
             } else {
@@ -37,19 +43,20 @@ struct StatusBar: View {
                 Spacer()
             }
 
-            HStack() {
+            HStack {
                 if isLockScreen {
-                    CellularSignalView(bars: signalBars, color: foregroundColor)
+                    CellularSignalView(bars: signalBars, color: resolvedColor)
                 }
                 if showWifi {
                     WifiSignalView(strength: wifiStrength)
                 }
-                BatteryView(level: levelBattery, isCharging: isCharging, color: foregroundColor)
+                BatteryView(level: levelBattery, isCharging: isCharging, color: resolvedColor)
             }
         }
-        .foregroundColor(foregroundColor)
+        .foregroundColor(resolvedColor)
         .padding(.horizontal, 20)
-        .frame(height: 44)
+        .frame(height: 40)
+        .padding(.top, -13)
     }
 }
 

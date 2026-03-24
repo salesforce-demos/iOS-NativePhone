@@ -97,15 +97,17 @@ struct LockScreenView: View {
                     .scaleEffect(dateTapScale)
                     
                     Rectangle()
+                        .fill(.clear)
                         .glassEffect(
                             .regular,
                             in: TextShape(
                                 text: AttributedString(
                                     timeString,
-                                    attributes: .init().font(.systemFont(ofSize: 110, weight: .heavy))
+                                    attributes: .init().font(.systemFont(ofSize: 110, weight: .semibold))
                                 )
                             )
                         )
+                        .environment(\.colorScheme, .light)
                 }
                 .opacity(opacity)
 
