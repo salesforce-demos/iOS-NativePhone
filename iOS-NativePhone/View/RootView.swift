@@ -45,6 +45,8 @@ struct RootView: View {
                 if isLocked {
                     LockScreenView(viewModel: lockVM, offset: $lockScreenOffset, opacity: .constant(1.0 - (progress * 1.5)))
                         .offset(y: lockScreenOffset)
+                        .clipShape(RoundedRectangle(cornerRadius: pow(progress, 0.4) * 54, style: .continuous))
+                        .scaleEffect(1 - progress * 0.04)
                         .gesture(
                             DragGesture()
                                 .onChanged { value in if value.translation.height < 0 { lockScreenOffset = value.translation.height } }
