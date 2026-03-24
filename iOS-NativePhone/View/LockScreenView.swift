@@ -71,7 +71,7 @@ struct LockScreenView: View {
 
             VStack(spacing: 0) {
 
-                // ── Botón candado
+                // Botón candado
                 Button(action: { viewModel.addNotification() }) {
                     Image(systemName: "lock.fill")
                         .font(.system(size: 20))
@@ -83,7 +83,7 @@ struct LockScreenView: View {
                 .opacity(opacity)
 
                 // Reloj
-                VStack(spacing: 12) {
+                VStack(spacing: -60) {
                     Button(action: { bounceDate(); viewModel.addNotification() }) {
                         Text(dateString)
                             .font(.system(size: 22, weight: .medium))
@@ -92,22 +92,21 @@ struct LockScreenView: View {
                             .padding(.vertical, 7)
                     }
                     .buttonStyle(.plain)
-                    .glassEffect(.clear.interactive(), in: Capsule(style: .continuous))
+                    .glassEffect(.clear.interactive())
                     .glassEffectID("date", in: ns)
                     .scaleEffect(dateTapScale)
-
-                    // Hora con el estilo exacto de iOS 26
-                    Text(timeString)
-                        .font(.system(size: 90, weight: .thin))
-                        .monospacedDigit()
-                        .tracking(-1) // Tracking negativo como en iOS
-                        .foregroundStyle(.white)
-                        .shadow(color: .white.opacity(0.6), radius: 2,  x: 0, y: 0)
-                        .shadow(color: .white.opacity(0.2), radius: 14, x: 0, y: 0)
-                        .shadow(color: .black.opacity(0.4), radius: 8,  x: 0, y: 4)
                     
+                    Rectangle()
+                        .glassEffect(
+                            .regular,
+                            in: TextShape(
+                                text: AttributedString(
+                                    timeString,
+                                    attributes: .init().font(.systemFont(ofSize: 110, weight: .heavy))
+                                )
+                            )
+                        )
                 }
-                .padding(.bottom, 20)
                 .opacity(opacity)
 
                

@@ -47,7 +47,7 @@ struct PhoneView: View {
                 VoicemailView()
                     .tabItem { Label("Voicemail", systemImage: "recordingtape") }
             }
-            .tint(.green)
+            .tint(.blue)
 
             // Custom status bar overlay
             StatusBar(

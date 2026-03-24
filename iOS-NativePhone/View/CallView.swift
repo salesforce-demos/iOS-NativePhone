@@ -84,50 +84,52 @@ struct CallView: View {
                 .frame(maxWidth: .infinity, alignment: .top)
                 
                 // MARK: Controls — always at bottom
-                VStack(spacing: 14) {
-                    // Row 1
-                    HStack(spacing: 0) {
-                        callButton(
-                            icon: isSpeaker ? "speaker.wave.3.fill" : "speaker.wave.2.fill",
-                            label: "Audio",
-                            active: isSpeaker,
-                            width: w / 3
-                        ) {
-                            isSpeaker.toggle()
-                            try? AVAudioSession.sharedInstance()
-                                .overrideOutputAudioPort(isSpeaker ? .speaker : .none)
-                        }
-                        callButton(icon: "video.fill", label: "FaceTime", active: isFaceTime, width: w / 3) {
-                            isFaceTime.toggle()
-                        }
-                        callButton(icon: "mic.slash.fill", label: "Mute", active: isMuted, width: w / 3) {
-                            isMuted.toggle()
-                        }
-                    }
-
-                    // Row 2
-                    HStack(spacing: 0) {
-                        callButton(icon: "ellipsis", label: "More", width: w / 3) {}
-
-                        // End — red glass
-                        Button {
-                            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
-                            callManager.endCall()
-                        } label: {
-                            VStack(spacing: 8) {
-                                Image(systemName: "phone.down.fill")
-                                    .font(.system(size: 26, weight: .medium))
-                                    .foregroundStyle(.white)
-                                    .frame(width: 72, height: 72)
-                                    .glassEffect(.regular.tint(.red).interactive(), in: Circle())
-                                Text("End")
-                                    .font(.system(size: 13))
-                                    .foregroundStyle(.white.opacity(0.75))
+                GlassEffectContainer(spacing: 20) {
+                    VStack(spacing: 14) {
+                        // Row 1
+                        HStack(spacing: 0) {
+                            callButton(
+                                icon: isSpeaker ? "speaker.wave.3.fill" : "speaker.wave.2.fill",
+                                label: "Audio",
+                                active: isSpeaker,
+                                width: w / 3
+                            ) {
+                                isSpeaker.toggle()
+                                try? AVAudioSession.sharedInstance()
+                                    .overrideOutputAudioPort(isSpeaker ? .speaker : .none)
+                            }
+                            callButton(icon: "video.fill", label: "FaceTime", active: isFaceTime, width: w / 3) {
+                                isFaceTime.toggle()
+                            }
+                            callButton(icon: "mic.slash.fill", label: "Mute", active: isMuted, width: w / 3) {
+                                isMuted.toggle()
                             }
                         }
-                        .frame(width: w / 3)
 
-                        callButton(icon: "circle.grid.3x3.fill", label: "Keypad", width: w / 3) {}
+                        // Row 2
+                        HStack(spacing: 0) {
+                            callButton(icon: "ellipsis", label: "More", width: w / 3) {}
+
+                            // End — red glass
+                            Button {
+                                UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                                callManager.endCall()
+                            } label: {
+                                VStack(spacing: 8) {
+                                    Image(systemName: "phone.down.fill")
+                                        .font(.system(size: 26, weight: .medium))
+                                        .foregroundStyle(.white)
+                                        .frame(width: 72, height: 72)
+                                        .glassEffect(.regular.tint(.red).interactive(), in: Circle())
+                                    Text("End")
+                                        .font(.system(size: 13))
+                                        .foregroundStyle(.white.opacity(0.75))
+                                }
+                            }
+                            .frame(width: w / 3)
+
+                            callButton(icon: "circle.grid.3x3.fill", label: "Keypad", width: w / 3) {}
+                        }
                     }
                 }
                 .frame(width: w)
