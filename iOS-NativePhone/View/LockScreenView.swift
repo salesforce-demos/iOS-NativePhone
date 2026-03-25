@@ -44,7 +44,7 @@ struct LockScreenView: View {
                 levelBattery: viewModel.statusBarLockScreen?.levelBattery ?? 0.4,
                 isCharging: viewModel.statusBarLockScreen?.isCharging ?? true
             )
-            .frame(height: 70)
+            .frame(height: 60)
             .background(Color.clear)
         }
         .ignoresSafeArea(edges: .top)

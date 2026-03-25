@@ -65,7 +65,7 @@ struct CallView: View {
                         levelBattery: statusBarPhoneView?.levelBattery ?? 0.8,
                         isCharging: statusBarPhoneView?.isCharging ?? false
                     )
-                    .frame(height: 70)
+                    .frame(height: 60)
                     .background(Color.clear)
                     Spacer()
                 }
@@ -80,7 +80,7 @@ struct CallView: View {
                         .font(.system(size: 68, weight: .semibold))
                         .foregroundStyle(.white)
                 }
-                .padding(.top, safeTop - 300)
+                .padding(.top, safeTop - 330)
                 .frame(maxWidth: .infinity, alignment: .top)
                 
                 // MARK: Controls — always at bottom
@@ -119,8 +119,8 @@ struct CallView: View {
                                     Image(systemName: "phone.down.fill")
                                         .font(.system(size: 26, weight: .medium))
                                         .foregroundStyle(.white)
-                                        .frame(width: 72, height: 72)
-                                        .glassEffect(.regular.tint(.red).interactive(), in: Circle())
+                                        .frame(width: 85, height: 85)
+                                        .glassEffect(.clear.tint(.red).interactive(), in: Circle())
                                     Text("End")
                                         .font(.system(size: 13))
                                         .foregroundStyle(.white.opacity(0.75))
@@ -184,9 +184,9 @@ struct CallView: View {
                 Image(systemName: icon)
                     .font(.system(size: 24, weight: .medium))
                     .foregroundStyle(active ? Color.black : .white)
-                    .frame(width: 72, height: 72)
+                    .frame(width: 85, height: 85)
                     .glassEffect(
-                        active ? .regular.tint(.white).interactive() : .regular.interactive(),
+                        active ? .clear.interactive() : .clear.interactive(),
                         in: Circle()
                     )
                 Text(label)

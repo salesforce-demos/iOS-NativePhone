@@ -59,7 +59,7 @@ struct PhoneView: View {
                 levelBattery: vm.statusBarChatView?.levelBattery ?? 0.3,
                 isCharging: vm.statusBarChatView?.isCharging ?? false
             )
-            .frame(height: 70)
+            .frame(height: 60)
             .background(Color.clear)
         }
         .ignoresSafeArea(edges: .top)
@@ -84,36 +84,36 @@ struct FavoritesView: View {
                     Button {
                         callingContact = contact
                     } label: {
-                        HStack(spacing: 15) {
+                        HStack(spacing: 12) {
                             AsyncImage(url: URL(string: contact.avatar ?? "")) { phase in
                                 switch phase {
                                 case .success(let image):
                                     image.resizable().scaledToFill()
-                                        .frame(width: 35, height: 35)
+                                        .frame(width: 45, height: 45)
                                         .clipShape(Circle())
                                 default:
                                     Circle()
-                                        .fill(Color.gray.opacity(0.3))
-                                        .frame(width: 35, height: 35)
+                                        .fill(Color.gray.opacity(0.35))
+                                        .frame(width: 46, height: 46)
                                         .overlay(
                                             Text(contact.name.prefix(2).uppercased())
-                                                .font(.caption).bold()
+                                                .font(.system(size: 17, weight: .semibold))
                                                 .foregroundStyle(.white)
                                         )
                                 }
                             }
-                            .frame(width: 35, height: 35)
+                            .frame(width: 46, height: 46)
 
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: 2) {
                                 Text(contact.name)
-                                    .fontWeight(.bold)
+                                    .font(.system(size: 17, weight: .regular))
                                     .foregroundStyle(.primary)
-                                HStack {
-                                    Image(systemName: "iphone")
-                                        .font(.caption)
+                                HStack(spacing: 3) {
+                                    Image(systemName: "phone")
+                                        .font(.system(size: 11))
                                         .foregroundStyle(.secondary)
                                     Text("mobile")
-                                        .font(.subheadline)
+                                        .font(.system(size: 13))
                                         .foregroundStyle(.secondary)
                                 }
                             }
@@ -124,9 +124,10 @@ struct FavoritesView: View {
                                 .foregroundStyle(.blue)
                                 .font(.title2)
                         }
-                        .padding(.vertical, 4)
+                        .padding(.vertical, -2)
                     }
                     .buttonStyle(.plain)
+                    .listSectionSeparator(.hidden, edges: .top)
                 }
             }
             .fullScreenCover(item: $callingContact) { contact in
@@ -480,8 +481,27 @@ struct IOSButtonStyle: ButtonStyle {
 
 // MARK: - Preview
 @available(iOS 26.0, *)
-#Preview("Preview") {
-    PhoneView(isLocked: .constant(false), onLockAction: {})
-        .statusBarHidden(true)
+#Preview("Preview Favorites") {
+    let contacts: [ContactConfig] = [
+        ContactConfig(id: 1, name: "AARP",     avatar: "https://ui-avatars.com/api/?name=AARP&background=E11B22&color=fff&bold=true",   imageURL: nil),
+        ContactConfig(id: 2, name: "Arthur",   avatar: "https://ui-avatars.com/api/?name=Arthur&background=1C1C1E&color=fff&bold=true", imageURL: nil),
+        ContactConfig(id: 3, name: "Elena",    avatar: "https://ui-avatars.com/api/?name=Elena&background=34C759&color=fff&bold=true",  imageURL: nil),
+        ContactConfig(id: 4, name: "Tim Cook", avatar: "https://ui-avatars.com/api/?name=TC&background=0080F6&color=fff&bold=true",     imageURL: nil),
+    ]
+    return FavoritesView(
+        contacts: contacts,
+        statusBarPhoneView: StatusBarSettings(
+            carrier: "T-Mobile", signalBars: 4, wifiStrength: 3,
+            showWifi: true, levelBattery: 0.9, isCharging: false
+        )
+    )
+    .statusBarHidden(true)
 }
+
+@available(iOS 26.0, *)
+#Preview("Preview") {
+    PhoneView(isLocked: .constant(true), onLockAction: {})
+    .statusBarHidden(true)
+}
+
 

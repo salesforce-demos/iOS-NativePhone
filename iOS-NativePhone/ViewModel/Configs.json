@@ -71,13 +71,13 @@
             "id": 2,
             "name": "Arthur",
             "avatar": "https://ui-avatars.com/api/?name=Arthur&background=1C1C1E&color=fff",
-            "imageURL": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=80"
+            "imageURL": "https://premiumcoding.com/wp-content/uploads/2014/03/iPhone-Wallpaper4.jpg"
         },
         {
             "id": 3,
             "name": "Elena",
             "avatar": "https://ui-avatars.com/api/?name=Elena&background=34C759&color=fff",
-            "imageURL": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80"
+            "imageURL": "https://premiumcoding.com/wp-content/uploads/2014/03/iPhone-Wallpaper10.jpg"
         }
     ]
 }
