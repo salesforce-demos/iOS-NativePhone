@@ -59,7 +59,7 @@ struct PhoneView: View {
                 levelBattery: vm.statusBarChatView?.levelBattery ?? 0.3,
                 isCharging: vm.statusBarChatView?.isCharging ?? false
             )
-            .frame(height: 60)
+            .frame(height: 75)
             .background(Color.clear)
         }
         .ignoresSafeArea(edges: .top)

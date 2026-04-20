@@ -44,7 +44,7 @@ struct LockScreenView: View {
                 levelBattery: viewModel.statusBarLockScreen?.levelBattery ?? 0.4,
                 isCharging: viewModel.statusBarLockScreen?.isCharging ?? true
             )
-            .frame(height: 60)
+            .frame(height: 75)
             .background(Color.clear)
         }
         .ignoresSafeArea(edges: .top)
@@ -83,7 +83,7 @@ struct LockScreenView: View {
                 .opacity(opacity)
 
                 // Reloj
-                VStack(spacing: -60) {
+                VStack(spacing: 0) {
                     Button(action: { bounceDate(); viewModel.addNotification() }) {
                         Text(dateString)
                             .font(.system(size: 22, weight: .medium))
@@ -96,18 +96,26 @@ struct LockScreenView: View {
                     .glassEffectID("date", in: ns)
                     .scaleEffect(dateTapScale)
                     
-                    Rectangle()
-                        .fill(.clear)
-                        .glassEffect(
-                            .regular,
-                            in: TextShape(
-                                text: AttributedString(
-                                    timeString,
-                                    attributes: .init().font(.systemFont(ofSize: 110, weight: .semibold))
-                                )
-                            )
-                        )
-                        .environment(\.colorScheme, .light)
+                    Text(timeString)
+                        .font(.system(size: 110, weight: .semibold))
+                        .hidden()
+                        .background {
+                            GeometryReader { geo in
+                                Rectangle()
+                                    .fill(.clear)
+                                    .glassEffect(
+                                        .regular,
+                                        in: TextShape(
+                                            text: AttributedString(
+                                                timeString,
+                                                attributes: .init().font(.systemFont(ofSize: 110, weight: .semibold))
+                                            )
+                                        )
+                                    )
+                                    .frame(width: geo.size.width, height: geo.size.height)
+                                    .environment(\.colorScheme, .light)
+                            }
+                        }
                 }
                 .opacity(opacity)
 

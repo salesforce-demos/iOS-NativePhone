@@ -54,7 +54,7 @@ struct StatusBar: View {
             }
         }
         .foregroundColor(resolvedColor)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 30)
         .frame(height: 40)
         .padding(.top, -13)
     }
@@ -132,21 +132,18 @@ struct BatteryView: View {
         max(0, min(level, 1))
     }
 
-    /// Bolt with split color: black over the green fill, green beyond it
     private var boltView: some View {
         let fillWidth = (bodyWidth - inset * 2) * clampedLevel + inset
 
         return ZStack {
-            // Green bolt (full) — visible beyond the fill
             Image(systemName: "bolt.fill")
                 .font(.system(size: 9, weight: .bold))
-                .foregroundColor(.green)
+                .foregroundColor(.white)
                 .frame(width: bodyWidth, height: bodyHeight)
-
-            // Black bolt clipped to the fill area
+ 
             Image(systemName: "bolt.fill")
                 .font(.system(size: 9, weight: .bold))
-                .foregroundColor(.black.opacity(0.4))
+                .foregroundColor(.white)
                 .frame(width: bodyWidth, height: bodyHeight)
                 .clipShape(
                     Rectangle()
@@ -169,7 +166,6 @@ struct WifiSignalView: View {
         Canvas { ctx, canvasSize in
             let center = CGPoint(x: canvasSize.width / 2, y: canvasSize.height - 1)
 
-            // iOS WiFi fan: ~44° spread each side from vertical
             let startAngle = Angle.degrees(225)
             let endAngle = Angle.degrees(315)
             let lineWidth: CGFloat = 2.8
@@ -184,7 +180,6 @@ struct WifiSignalView: View {
                 ctx.opacity = 1.0
             }
 
-            // Bottom dot (filled circle)
             let dotRadius: CGFloat = 1.8
             let dotRect = CGRect(
                 x: center.x - dotRadius,

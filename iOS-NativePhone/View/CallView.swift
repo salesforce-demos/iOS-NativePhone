@@ -65,7 +65,7 @@ struct CallView: View {
                         levelBattery: statusBarPhoneView?.levelBattery ?? 0.8,
                         isCharging: statusBarPhoneView?.isCharging ?? false
                     )
-                    .frame(height: 60)
+                    .frame(height: 75)
                     .background(Color.clear)
                     Spacer()
                 }
@@ -77,8 +77,9 @@ struct CallView: View {
                         .font(.system(size: 24, weight: .regular))
                         .foregroundStyle(.white.opacity(0.65))
                     Text(contact.name)
-                        .font(.system(size: 68, weight: .semibold))
+                        .font(.system(size: 55, weight: .semibold))
                         .foregroundStyle(.white)
+                        .multilineTextAlignment(.center)
                 }
                 .padding(.top, safeTop - 330)
                 .frame(maxWidth: .infinity, alignment: .top)
@@ -133,7 +134,7 @@ struct CallView: View {
                     }
                 }
                 .frame(width: w)
-                .position(x: w / 2, y: h - safeBot - 130)
+                .position(x: w / 2, y: h - safeBot - 160)
             }
             .frame(width: w, height: h)
         }
@@ -150,7 +151,6 @@ struct CallView: View {
         }
         .onChange(of: callManager.state) { _, state in
             if state == .ended {
-                // Show "Llamada finalizada" briefly before dismissing
                 Task {
                     try? await Task.sleep(nanoseconds: 1_300_000_000)
                     onEnd()
