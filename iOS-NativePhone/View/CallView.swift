@@ -95,16 +95,24 @@ struct CallView: View {
                             callManager.startCall()
                         } label: {
                             Text(contact.name)
-                                .font(.system(size: 55, weight: .semibold))
+                                .font(.system(size: 52, weight: .semibold))
                                 .foregroundStyle(.white)
-                                .multilineTextAlignment(.center)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .padding(.horizontal, 40)
+                                .padding(.vertical, 20)
+                                .contentShape(Rectangle())
                         }
                         .buttonStyle(NoFeedbackButtonStyle())
                     } else {
                         Text(contact.name)
-                            .font(.system(size: 55, weight: .semibold))
+                            .font(.system(size: 52, weight: .semibold))
                             .foregroundStyle(.white)
-                            .multilineTextAlignment(.center)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                            .padding(.horizontal, 40)
+                            .padding(.vertical, 20)
+                            .contentShape(Rectangle())
                     }
                 }
                 .padding(.top, safeTop - 330)
@@ -164,47 +172,45 @@ struct CallView: View {
                 .frame(width: w)
                 .position(x: w / 2, y: h - safeBot - 160)
 
-                // MARK: In-call notification banner
-                if notifVisible, let notif = activeNotification {
-                    VStack {
-                        GlassEffectContainer(spacing: 0) {
-                            HStack(alignment: .center, spacing: 12) {
-                                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .fill(parseNotifColor(notif.iconColor ?? "#007AFF"))
-                                    .frame(width: 38, height: 38)
-                                    .overlay(
-                                        Image(systemName: notif.iconName ?? "bell.fill")
-                                            .font(.system(size: 17, weight: .medium))
-                                            .foregroundStyle(.white)
-                                    )
-                                VStack(alignment: .leading, spacing: 2) {
-                                    HStack(alignment: .firstTextBaseline) {
-                                        Text(notif.appName ?? "")
-                                            .font(.system(size: 13, weight: .semibold))
-                                            .foregroundStyle(.white)
-                                        Spacer()
-                                        Text(notif.timeAgo ?? "now")
-                                            .font(.caption)
-                                            .foregroundStyle(.white.opacity(0.6))
-                                    }
-                                    Text(notif.message ?? "")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.white.opacity(0.9))
-                                        .lineLimit(2)
+                // MARK: In-call notification banner — siempre en el árbol
+                VStack {
+                    GlassEffectContainer(spacing: 0) {
+                        HStack(alignment: .center, spacing: 12) {
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .fill(parseNotifColor(activeNotification?.iconColor ?? "#007AFF"))
+                                .frame(width: 38, height: 38)
+                                .overlay(
+                                    Image(systemName: activeNotification?.iconName ?? "bell.fill")
+                                        .font(.system(size: 17, weight: .medium))
+                                        .foregroundStyle(.white)
+                                )
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(alignment: .firstTextBaseline) {
+                                    Text(activeNotification?.appName ?? "")
+                                        .font(.system(size: 13, weight: .semibold))
+                                        .foregroundStyle(.white)
+                                    Spacer()
+                                    Text(activeNotification?.timeAgo ?? "now")
+                                        .font(.caption)
+                                        .foregroundStyle(.white.opacity(0.6))
                                 }
+                                Text(activeNotification?.message ?? "")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.white.opacity(0.9))
+                                    .lineLimit(2)
                             }
-                            .padding(12)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .glassEffect(.clear.interactive(), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-                            .glassEffectID("callNotif", in: notifNS)
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 75)
-                        Spacer()
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
                     }
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .zIndex(10)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 75)
+                    Spacer()
                 }
+                .opacity(notifVisible ? 1 : 0)
+                .offset(y: notifVisible ? 0 : -120)
+                .zIndex(10)
             }
             .frame(width: w, height: h)
         }
@@ -288,6 +294,7 @@ struct CallView: View {
                 .font(.system(size: 24, weight: .medium))
                 .foregroundStyle(active ? Color.black : .white)
                 .frame(width: 85, height: 85)
+                .contentShape(Circle())
                 .glassEffect(
                     silent ? .clear : (active ? .clear.interactive() : .clear.interactive()),
                     in: Circle()
