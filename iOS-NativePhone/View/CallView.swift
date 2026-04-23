@@ -12,12 +12,22 @@ struct CallView: View {
     var preloadedBackground: UIImage? = nil
     var onEnd: () -> Void
     let statusBarPhoneView: StatusBarSettings?
+    /// Si true, la llamada no inicia automáticamente; espera tap en el nombre del contacto.
+    var waitForTap: Bool = false
+    var callNotifications: [NotificationConfig] = []
 
     @StateObject private var callManager = CallManager()
     @State private var isSpeaker  = false
     @State private var isMuted    = false
     @State private var isFaceTime = false
     @State private var fetchedImage: UIImage? = nil
+    @State private var callStarted: Bool = false
+
+    // In-call notification
+    @State private var activeNotification: NotificationConfig? = nil
+    @State private var notifVisible: Bool = false
+    @State private var notifIndex: Int = 0
+    @Namespace private var notifNS
     
     // Propiedades para el StatusBar
     @State private var currentTime = Date()
@@ -73,13 +83,29 @@ struct CallView: View {
 
                 // MARK: Contact info — top centered
                 VStack(spacing: 3) {
+    
                     callStatusText
                         .font(.system(size: 24, weight: .regular))
                         .foregroundStyle(.white.opacity(0.65))
-                    Text(contact.name)
-                        .font(.system(size: 55, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .multilineTextAlignment(.center)
+                
+                    if waitForTap && !callStarted {
+                        Button {
+                            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                            callStarted = true
+                            callManager.startCall()
+                        } label: {
+                            Text(contact.name)
+                                .font(.system(size: 55, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .multilineTextAlignment(.center)
+                        }
+                        .buttonStyle(NoFeedbackButtonStyle())
+                    } else {
+                        Text(contact.name)
+                            .font(.system(size: 55, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.center)
+                    }
                 }
                 .padding(.top, safeTop - 330)
                 .frame(maxWidth: .infinity, alignment: .top)
@@ -109,7 +135,9 @@ struct CallView: View {
 
                         // Row 2
                         HStack(spacing: 0) {
-                            callButton(icon: "ellipsis", label: "More", width: w / 3) {}
+                            callButton(icon: "ellipsis", label: "More", width: w / 3, silent: true) {
+                                showNextNotification()
+                            }
 
                             // End — red glass
                             Button {
@@ -135,12 +163,56 @@ struct CallView: View {
                 }
                 .frame(width: w)
                 .position(x: w / 2, y: h - safeBot - 160)
+
+                // MARK: In-call notification banner
+                if notifVisible, let notif = activeNotification {
+                    VStack {
+                        GlassEffectContainer(spacing: 0) {
+                            HStack(alignment: .center, spacing: 12) {
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .fill(parseNotifColor(notif.iconColor ?? "#007AFF"))
+                                    .frame(width: 38, height: 38)
+                                    .overlay(
+                                        Image(systemName: notif.iconName ?? "bell.fill")
+                                            .font(.system(size: 17, weight: .medium))
+                                            .foregroundStyle(.white)
+                                    )
+                                VStack(alignment: .leading, spacing: 2) {
+                                    HStack(alignment: .firstTextBaseline) {
+                                        Text(notif.appName ?? "")
+                                            .font(.system(size: 13, weight: .semibold))
+                                            .foregroundStyle(.white)
+                                        Spacer()
+                                        Text(notif.timeAgo ?? "now")
+                                            .font(.caption)
+                                            .foregroundStyle(.white.opacity(0.6))
+                                    }
+                                    Text(notif.message ?? "")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.white.opacity(0.9))
+                                        .lineLimit(2)
+                                }
+                            }
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .glassEffect(.clear.interactive(), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                            .glassEffectID("callNotif", in: notifNS)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 75)
+                        Spacer()
+                    }
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .zIndex(10)
+                }
             }
             .frame(width: w, height: h)
         }
         .ignoresSafeArea()
         .task {
-            callManager.startCall()
+            if !waitForTap {
+                callManager.startCall()
+            }
             guard preloadedBackground == nil,
                   let urlStr = contact.imageURL,
                   let url = URL(string: urlStr) else { return }
@@ -173,28 +245,75 @@ struct CallView: View {
         }
     }
 
+    // MARK: - Show in-call notification
+    private func showNextNotification() {
+        guard !callNotifications.isEmpty else { return }
+        if notifVisible {
+            withAnimation(.spring(response: 0.7, dampingFraction: 0.85)) { notifVisible = false }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.65) { triggerNotif() }
+        } else {
+            triggerNotif()
+        }
+    }
+
+    private func triggerNotif() {
+        let notif = callNotifications[notifIndex % callNotifications.count]
+        notifIndex += 1
+        activeNotification = notif
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) { notifVisible = true }
+        // Auto-dismiss tras 4 segundos
+        Task {
+            try? await Task.sleep(nanoseconds: 4_000_000_000)
+            withAnimation(.spring(response: 0.7, dampingFraction: 0.85)) { notifVisible = false }
+        }
+    }
+
+    private func parseNotifColor(_ hex: String) -> Color {
+        var h = hex.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "#", with: "")
+        var rgb: UInt64 = 0
+        Scanner(string: h).scanHexInt64(&rgb)
+        return Color(
+            red:   Double((rgb & 0xFF0000) >> 16) / 255,
+            green: Double((rgb & 0x00FF00) >>  8) / 255,
+            blue:  Double( rgb & 0x0000FF       ) / 255
+        )
+    }
+
     // MARK: - Generic call control button
     @ViewBuilder
-    private func callButton(icon: String, label: String, active: Bool = false, width: CGFloat, action: @escaping () -> Void) -> some View {
-        Button {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            action()
-        } label: {
-            VStack(spacing: 8) {
-                Image(systemName: icon)
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundStyle(active ? Color.black : .white)
-                    .frame(width: 85, height: 85)
-                    .glassEffect(
-                        active ? .clear.interactive() : .clear.interactive(),
-                        in: Circle()
-                    )
-                Text(label)
-                    .font(.system(size: 13))
-                    .foregroundStyle(.white.opacity(0.75))
-            }
+    private func callButton(icon: String, label: String, active: Bool = false, width: CGFloat, silent: Bool = false, action: @escaping () -> Void) -> some View {
+        let content = VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 24, weight: .medium))
+                .foregroundStyle(active ? Color.black : .white)
+                .frame(width: 85, height: 85)
+                .glassEffect(
+                    silent ? .clear : (active ? .clear.interactive() : .clear.interactive()),
+                    in: Circle()
+                )
+            Text(label)
+                .font(.system(size: 13))
+                .foregroundStyle(.white.opacity(0.75))
         }
-        .frame(width: width)
+        if silent {
+            Button { action() } label: { content }
+                .buttonStyle(NoFeedbackButtonStyle())
+                .frame(width: width)
+        } else {
+            Button {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                action()
+            } label: { content }
+                .frame(width: width)
+        }
+    }
+}
+
+// MARK: - No visual feedback button style
+private struct NoFeedbackButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
     }
 }
 

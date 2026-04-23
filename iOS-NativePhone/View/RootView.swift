@@ -15,6 +15,13 @@ struct RootView: View {
     @State private var isConfigured: Bool = false
     @State private var chatServiceURL: String = ""
     
+    // Direct call mode
+    @State private var isDirectCall: Bool = false
+    @State private var directCallContact: ContactConfig? = nil
+    @State private var directCallStatusBar: StatusBarSettings? = nil
+    @State private var directCallBackground: UIImage? = nil
+    @State private var directCallNotifications: [NotificationConfig] = []
+    
     let screenHeight = UIScreen.main.bounds.height
     
     var progress: Double {
@@ -24,16 +31,37 @@ struct RootView: View {
     
     var body: some View {
         ZStack {
-            if !isConfigured {
-                // CONFIGURACIÓN INICIAL
+            if isDirectCall, let contact = directCallContact {
+                // DIRECT CALL — skip LockScreen and PhoneView
+                if #available(iOS 26.0, *) {
+                    CallView(
+                        contact: contact,
+                        preloadedBackground: directCallBackground,
+                        onEnd: {
+                            isDirectCall = false
+                            isLocked = false
+                        },
+                        statusBarPhoneView: directCallStatusBar,
+                        waitForTap: true,
+                        callNotifications: directCallNotifications
+                    )
+                    .transition(.opacity)
+                    .zIndex(3)
+                    .statusBarHidden(true)
+                }
+            } else if !isConfigured {
+                // CONFIGURACIÓN INICIAL (pantalla Google)
                 URLConfigurationView(
                     chatServiceURL: $chatServiceURL,
-                    isConfigured: $isConfigured
+                    isConfigured: $isConfigured,
+                    onConfirm: { url in
+                        await handleConfirm(url: url)
+                    }
                 )
                 .transition(.opacity)
                 .zIndex(2)
             } else {
-                // CHAT
+                // PHONE VIEW
                 PhoneView(isLocked: $isLocked, onLockAction: { lockPhone() })
                     .scaleEffect(isLocked ? 0.94 + (0.06 * progress) : 1.0)
                     .blur(radius: isLocked ? (1.0 - progress) * 3 : 0)
@@ -63,18 +91,53 @@ struct RootView: View {
         }
         .background(Color.black).ignoresSafeArea()
         .onAppear {
-            // Cargar URL guardada desde UserDefaults
             if let savedURL = UserDefaults.standard.string(forKey: "chatServiceURL"), !savedURL.isEmpty {
                 chatServiceURL = savedURL
-                // Opcional: auto-configurar si ya existe una URL guardada
-                // isConfigured = true
             }
         }
-        .onChange(of: isConfigured) { oldValue, newValue in
-            if newValue {
-                // Configurar la URL del servicio cuando se confirma
-                NetworkService.shared.baseURL = chatServiceURL
+    }
+    
+    // MARK: - Confirm handler: fetch config + image, then transition
+    @MainActor
+    private func handleConfirm(url: String) async {
+        NetworkService.shared.baseURL = url
+        
+        // Fetch config
+        let config: AppConfig? = await withCheckedContinuation { continuation in
+            NetworkService.shared.fetchChatConfig { result in
+                switch result {
+                case .success(let c): continuation.resume(returning: c)
+                case .failure: continuation.resume(returning: nil)
+                }
             }
+        }
+        
+        guard let config, config.directCall == true,
+              let firstContact = config.contacts?.first else {
+            // No directCall: ir al flujo normal
+            withAnimation(.easeInOut(duration: 0.3)) { isConfigured = true }
+            return
+        }
+        
+        // Descargar imagen mientras el usuario sigue viendo la pantalla de Google
+        directCallContact = firstContact
+        directCallStatusBar = config.statusBar?.chatview
+        directCallNotifications = config.callNotifications ?? []
+        await fetchDirectCallBackground(for: firstContact)
+        
+        // Todo listo: transición directa a CallView
+        isConfigured = true
+        withAnimation(.easeIn(duration: 0.3)) {
+            isDirectCall = true
+        }
+    }
+    
+    private func fetchDirectCallBackground(for contact: ContactConfig) async {
+        guard let urlStr = contact.imageURL,
+              let url = URL(string: urlStr) else { return }
+        if let (data, _) = try? await URLSession.shared.data(from: url),
+           let img = UIImage(data: data) {
+            directCallBackground = img
         }
     }
     

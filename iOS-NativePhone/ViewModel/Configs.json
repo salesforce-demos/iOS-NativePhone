@@ -1,5 +1,6 @@
 {
     "configName": "AARP",
+    "directCall": false,
     "statusBar": {
         "lockscreen": {
             "carrier": "Vodafone",
@@ -58,6 +59,40 @@
             "title": "Wire Transfer",
             "message": "International transfer to Switzerland authorized",
             "timeAgo": "3 hr"
+        }
+    ],
+    "callNotifications": [
+        {
+            "appName": "Messages",
+            "iconName": "message.fill",
+            "iconColor": "#34C759",
+            "title": "Sarah Johnson",
+            "message": "Hey, are you free to talk later today?",
+            "timeAgo": "now"
+        },
+        {
+            "appName": "Mail",
+            "iconName": "envelope.fill",
+            "iconColor": "#007AFF",
+            "title": "Contract Review",
+            "message": "Please review and sign the attached documents",
+            "timeAgo": "1 min"
+        },
+        {
+            "appName": "Slack",
+            "iconName": "bubble.left.and.bubble.right.fill",
+            "iconColor": "#611F69",
+            "title": "Design Team",
+            "message": "New comments on the Figma prototype",
+            "timeAgo": "3 min"
+        },
+        {
+            "appName": "Reminders",
+            "iconName": "checklist",
+            "iconColor": "#FF9500",
+            "title": "Follow-up Call",
+            "message": "Don't forget to call back the client",
+            "timeAgo": "5 min"
         }
     ],
     "contacts": [

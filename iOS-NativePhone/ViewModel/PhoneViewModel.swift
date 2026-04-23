@@ -11,6 +11,7 @@ class PhoneViewModel: ObservableObject {
     @Published var statusBarChatView: StatusBarSettings? = nil
     @Published var contacts: [ContactConfig] = []
     @Published var contactImages: [Int: UIImage] = [:]
+    @Published var callNotifications: [NotificationConfig] = []
 
     private var isDataLoaded = false
 
@@ -25,6 +26,7 @@ class PhoneViewModel: ObservableObject {
                 case .success(let config):
                     self.statusBarChatView = config.statusBar?.chatview
                     self.contacts = config.contacts ?? []
+                    self.callNotifications = config.callNotifications ?? []
                     self.isDataLoaded = true
                     // Preload background images immediately after contacts load
                     Task { await self.preloadImages(for: self.contacts) }

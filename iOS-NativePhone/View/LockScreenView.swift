@@ -44,7 +44,7 @@ struct LockScreenView: View {
                 levelBattery: viewModel.statusBarLockScreen?.levelBattery ?? 0.4,
                 isCharging: viewModel.statusBarLockScreen?.isCharging ?? true
             )
-            .frame(height: 75)
+            .frame(height: 70)
             .background(Color.clear)
         }
         .ignoresSafeArea(edges: .top)
@@ -71,7 +71,7 @@ struct LockScreenView: View {
 
             VStack(spacing: 0) {
 
-                // Botón candado
+                // ── Botón candado
                 Button(action: { viewModel.addNotification() }) {
                     Image(systemName: "lock.fill")
                         .font(.system(size: 20))
@@ -83,7 +83,7 @@ struct LockScreenView: View {
                 .opacity(opacity)
 
                 // Reloj
-                VStack(spacing: 0) {
+                VStack(spacing: -60) {
                     Button(action: { bounceDate(); viewModel.addNotification() }) {
                         Text(dateString)
                             .font(.system(size: 22, weight: .medium))
@@ -92,31 +92,25 @@ struct LockScreenView: View {
                             .padding(.vertical, 7)
                     }
                     .buttonStyle(.plain)
-                    .glassEffect(.clear.interactive())
+                    .glassEffect(.clear.interactive(), in: Capsule(style: .continuous))
                     .glassEffectID("date", in: ns)
                     .scaleEffect(dateTapScale)
+
+                    Rectangle()
+                        .fill(.clear)
+                        .glassEffect(
+                            .regular,
+                            in: TextShape(
+                                text: AttributedString(
+                                    timeString,
+                                    attributes: .init().font(.systemFont(ofSize: 110, weight: .semibold))
+                                )
+                            )
+                        )
+                        .environment(\.colorScheme, .light)
                     
-                    Text(timeString)
-                        .font(.system(size: 110, weight: .semibold))
-                        .hidden()
-                        .background {
-                            GeometryReader { geo in
-                                Rectangle()
-                                    .fill(.clear)
-                                    .glassEffect(
-                                        .regular,
-                                        in: TextShape(
-                                            text: AttributedString(
-                                                timeString,
-                                                attributes: .init().font(.systemFont(ofSize: 110, weight: .semibold))
-                                            )
-                                        )
-                                    )
-                                    .frame(width: geo.size.width, height: geo.size.height)
-                                    .environment(\.colorScheme, .light)
-                            }
-                        }
                 }
+                .padding(.bottom, 20)
                 .opacity(opacity)
 
                

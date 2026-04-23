@@ -31,7 +31,8 @@ struct PhoneView: View {
                     contacts: vm.contacts,
                     preloadedImages: vm.contactImages,
                     onLock: onLockAction,
-                    statusBarPhoneView: vm.statusBarChatView
+                    statusBarPhoneView: vm.statusBarChatView,
+                    callNotifications: vm.callNotifications
                 )
                     .tabItem { Label("Favorites", systemImage: "star.fill") }
 
@@ -74,6 +75,7 @@ struct FavoritesView: View {
     var preloadedImages: [Int: UIImage] = [:]
     var onLock: () -> Void = {}
     let statusBarPhoneView: StatusBarSettings?
+    var callNotifications: [NotificationConfig] = []
 
     @State private var callingContact: ContactConfig? = nil
 
@@ -134,10 +136,10 @@ struct FavoritesView: View {
                 CallView(
                     contact: contact,
                     preloadedBackground: preloadedImages[contact.id],
-                    onEnd: {
-                        callingContact = nil
-                    },
-                    statusBarPhoneView: statusBarPhoneView)
+                    onEnd: { callingContact = nil },
+                    statusBarPhoneView: statusBarPhoneView,
+                    callNotifications: callNotifications
+                )
                 .statusBarHidden(true)
             }
             .listStyle(.plain)

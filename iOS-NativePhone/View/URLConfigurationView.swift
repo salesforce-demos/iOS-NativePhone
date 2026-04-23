@@ -11,6 +11,10 @@ struct URLConfigurationView: View {
     @Binding var chatServiceURL: String
     @Binding var isConfigured: Bool
     
+    /// Llamado cuando el usuario confirma la URL. El closure es async y maneja la carga;
+    /// cuando termina, debe actualizar isConfigured. Si es nil, se usa el comportamiento original.
+    var onConfirm: ((String) async -> Void)? = nil
+    
     @State private var inputURL: String = ""
     @State private var isSearching: Bool = false
     @FocusState private var isTextFieldFocused: Bool
@@ -130,6 +134,7 @@ struct URLConfigurationView: View {
                     .foregroundColor(.gray)
                     .frame(width: 22, height: 22)
                     .contentTransition(.symbolEffect(.replace))
+                    .symbolEffect(.rotate, isActive: isSearching)
             }
             .disabled(isSearching)
             
@@ -238,12 +243,19 @@ struct URLConfigurationView: View {
     // MARK: - Functions
     private func useLocalJSON() {
         inputURL = ""
-        
         chatServiceURL = ""
         UserDefaults.standard.set("", forKey: "chatServiceURL")
-        // Marcar como configurado y mostrar el lock screen
-        withAnimation(.easeInOut(duration: 0.3)) {
-            isConfigured = true
+
+        if let onConfirm {
+            isSearching = true
+            Task {
+                await onConfirm("")
+                await MainActor.run { isSearching = false }
+            }
+        } else {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                isConfigured = true
+            }
         }
     }
     
@@ -269,17 +281,21 @@ struct URLConfigurationView: View {
         
         // Guardar la URL
         chatServiceURL = urlToSave
+        UserDefaults.standard.set(urlToSave, forKey: "chatServiceURL")
         
-        // Simulamos un pequeño delay para la animación
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            isSearching = false
-            
-            // Guardar en UserDefaults para persistencia
-            UserDefaults.standard.set(urlToSave, forKey: "chatServiceURL")
-            
-            // Marcar como configurado y mostrar el lock screen
-            withAnimation(.easeInOut(duration: 0.3)) {
-                isConfigured = true
+        if let onConfirm {
+            // El closure externo maneja la carga; espera a que termine para quitar el spinner
+            Task {
+                await onConfirm(urlToSave)
+                await MainActor.run { isSearching = false }
+            }
+        } else {
+            // Comportamiento original
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                isSearching = false
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    isConfigured = true
+                }
             }
         }
     }

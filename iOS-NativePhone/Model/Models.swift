@@ -10,8 +10,10 @@ import Foundation
 // MARK: - Root Model
 struct AppConfig: Codable {
     let configName: String
+    let directCall: Bool?
     let statusBar: StatusBarConfig?
     let notifications: [NotificationConfig]?
+    let callNotifications: [NotificationConfig]?
     let contacts: [ContactConfig]?
 }
 
