@@ -15,6 +15,7 @@ struct CallView: View {
     /// Si true, la llamada no inicia automáticamente; espera tap en el nombre del contacto.
     var waitForTap: Bool = false
     var callNotifications: [NotificationConfig] = []
+    var notificationImages: [String: UIImage] = [:]
 
     @StateObject private var callManager = CallManager()
     @State private var isSpeaker  = false
@@ -217,20 +218,19 @@ struct CallView: View {
                                         .fill(Color.white.opacity(0.15))
                                         .frame(width: 44, height: 44)
                                         .overlay {
-                                            if let url = URL(string: docValue), url.scheme == "https" || url.scheme == "http" {
-                                                AsyncImage(url: url) { phase in
-                                                    switch phase {
-                                                    case .success(let img):
-                                                        img.resizable().scaledToFill()
-                                                            .frame(width: 44, height: 44)
-                                                    default:
-                                                        Image(systemName: "photo")
-                                                            .font(.system(size: 18))
-                                                            .foregroundStyle(.white.opacity(0.5))
-                                                            .frame(width: 44, height: 44)
-                                                    }
+                                            if let url = URL(string: docValue),
+                                               url.scheme == "https" || url.scheme == "http" {
+                                                if let cached = notificationImages[docValue] {
+                                                    Image(uiImage: cached)
+                                                        .resizable().scaledToFill()
+                                                        .frame(width: 44, height: 44)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                                } else {
+                                                    Image(systemName: "photo")
+                                                        .font(.system(size: 18))
+                                                        .foregroundStyle(.white.opacity(0.5))
+                                                        .frame(width: 44, height: 44)
                                                 }
-                                                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                                             } else {
                                                 Image(systemName: docValue)
                                                     .font(.system(size: 20))
@@ -247,8 +247,9 @@ struct CallView: View {
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                        .glassEffect(.clear.tint(.black.opacity(0.35)), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
                     }
+                    .environment(\.colorScheme, .dark)
                     .padding(.horizontal, 16)
                     .padding(.top, 75)
                     Spacer()
@@ -326,6 +327,8 @@ struct CallView: View {
             }
         }
     }
+
+    /// UILabel-backed text view that renders emojis correctly inside glassEffect contexts
 
     private func parseNotifColor(_ hex: String) -> Color {
         var h = hex.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "#", with: "")

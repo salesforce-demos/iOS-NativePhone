@@ -21,6 +21,7 @@ struct RootView: View {
     @State private var directCallStatusBar: StatusBarSettings? = nil
     @State private var directCallBackground: UIImage? = nil
     @State private var directCallNotifications: [NotificationConfig] = []
+    @State private var directCallNotifImages: [String: UIImage] = [:]
     
     let screenHeight = UIScreen.main.bounds.height
     
@@ -43,7 +44,8 @@ struct RootView: View {
                         },
                         statusBarPhoneView: directCallStatusBar,
                         waitForTap: true,
-                        callNotifications: directCallNotifications
+                        callNotifications: directCallNotifications,
+                        notificationImages: directCallNotifImages
                     )
                     .transition(.opacity)
                     .zIndex(3)
@@ -123,8 +125,12 @@ struct RootView: View {
         directCallContact = firstContact
         directCallStatusBar = config.statusBar?.chatview
         directCallNotifications = config.callNotifications ?? []
-        await fetchDirectCallBackground(for: firstContact)
-        
+
+        // Descargar en paralelo: imagen de fondo + imágenes de documentIcon de notificaciones
+        async let bgFetch: Void = fetchDirectCallBackground(for: firstContact)
+        async let notifFetch: Void = fetchNotificationImages(for: config.callNotifications ?? [])
+        _ = await (bgFetch, notifFetch)
+
         // Todo listo: transición directa a CallView
         isConfigured = true
         withAnimation(.easeIn(duration: 0.3)) {
@@ -132,6 +138,26 @@ struct RootView: View {
         }
     }
     
+    private func fetchNotificationImages(for notifications: [NotificationConfig]) async {
+        await withTaskGroup(of: (String, UIImage)?.self) { group in
+            for notif in notifications {
+                guard let urlStr = notif.documentIcon,
+                      let url = URL(string: urlStr),
+                      url.scheme == "https" || url.scheme == "http" else { continue }
+                group.addTask {
+                    guard let (data, _) = try? await URLSession.shared.data(from: url),
+                          let img = UIImage(data: data) else { return nil }
+                    return (urlStr, img)
+                }
+            }
+            for await result in group {
+                if let (key, img) = result {
+                    directCallNotifImages[key] = img
+                }
+            }
+        }
+    }
+
     private func fetchDirectCallBackground(for contact: ContactConfig) async {
         guard let urlStr = contact.imageURL,
               let url = URL(string: urlStr) else { return }
