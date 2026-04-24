@@ -46,13 +46,15 @@ struct NotificationConfig: Codable, Identifiable {
     let appName: String?
     let iconName: String?
     let iconColor: String?
+    let imageName: String?    // Asset catalog image (e.g. "whatsapp")
+    let documentIcon: String? // SF Symbol name or URL for the document thumbnail
     let title: String?
     let message: String?
     let timeAgo: String?
     
     // CodingKeys para excluir 'id' del JSON
     enum CodingKeys: String, CodingKey {
-        case appName, iconName, iconColor, title, message, timeAgo
+        case appName, iconName, iconColor, imageName, documentIcon, title, message, timeAgo
     }
     
     // Decoder personalizado para generar el ID
@@ -62,6 +64,8 @@ struct NotificationConfig: Codable, Identifiable {
         self.appName = try container.decodeIfPresent(String.self, forKey: .appName)
         self.iconName = try container.decodeIfPresent(String.self, forKey: .iconName)
         self.iconColor = try container.decodeIfPresent(String.self, forKey: .iconColor)
+        self.imageName = try container.decodeIfPresent(String.self, forKey: .imageName)
+        self.documentIcon = try container.decodeIfPresent(String.self, forKey: .documentIcon)
         self.title = try container.decodeIfPresent(String.self, forKey: .title)
         self.message = try container.decodeIfPresent(String.self, forKey: .message)
         self.timeAgo = try container.decodeIfPresent(String.self, forKey: .timeAgo)
@@ -73,6 +77,8 @@ struct NotificationConfig: Codable, Identifiable {
         try container.encodeIfPresent(appName, forKey: .appName)
         try container.encodeIfPresent(iconName, forKey: .iconName)
         try container.encodeIfPresent(iconColor, forKey: .iconColor)
+        try container.encodeIfPresent(imageName, forKey: .imageName)
+        try container.encodeIfPresent(documentIcon, forKey: .documentIcon)
         try container.encodeIfPresent(title, forKey: .title)
         try container.encodeIfPresent(message, forKey: .message)
         try container.encodeIfPresent(timeAgo, forKey: .timeAgo)
