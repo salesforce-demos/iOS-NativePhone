@@ -27,6 +27,7 @@ struct CallView: View {
     @State private var activeNotification: NotificationConfig? = nil
     @State private var notifVisible: Bool = false
     @State private var notifIndex: Int = 0
+    @State private var dismissTask: Task<Void, Never>? = nil
     @Namespace private var notifNS
     
     // Propiedades para el StatusBar
@@ -176,31 +177,75 @@ struct CallView: View {
                 VStack {
                     GlassEffectContainer(spacing: 0) {
                         HStack(alignment: .center, spacing: 12) {
+                            // Ícono app
                             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(parseNotifColor(activeNotification?.iconColor ?? "#007AFF"))
-                                .frame(width: 38, height: 38)
-                                .overlay(
-                                    Image(systemName: activeNotification?.iconName ?? "bell.fill")
-                                        .font(.system(size: 17, weight: .medium))
-                                        .foregroundStyle(.white)
-                                )
-                            VStack(alignment: .leading, spacing: 2) {
-                                HStack(alignment: .firstTextBaseline) {
-                                    Text(activeNotification?.appName ?? "")
-                                        .font(.system(size: 13, weight: .semibold))
-                                        .foregroundStyle(.white)
-                                    Spacer()
-                                    Text(activeNotification?.timeAgo ?? "now")
-                                        .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.6))
+                                .fill(parseNotifColor(activeNotification?.iconColor ?? "#25D366"))
+                                .frame(width: 40, height: 40)
+                                .overlay {
+                                    if let imgName = activeNotification?.imageName,
+                                       let uiImg = UIImage(named: imgName) {
+                                        Image(uiImage: uiImg)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 40, height: 40)
+                                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                    } else {
+                                        Image(systemName: activeNotification?.iconName ?? "bell.fill")
+                                            .font(.system(size: 20, weight: .medium))
+                                            .foregroundStyle(.white)
+                                    }
                                 }
+
+                            // Texto central
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(activeNotification?.title ?? "")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundStyle(.white)
                                 Text(activeNotification?.message ?? "")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.white.opacity(0.9))
+                                    .font(.system(size: 13))
+                                    .foregroundStyle(.white.opacity(0.85))
                                     .lineLimit(2)
                             }
+
+                            // Hora + miniatura de documento (solo si documentIcon tiene valor)
+                            if let docValue = activeNotification?.documentIcon, !docValue.isEmpty {
+                                VStack(alignment: .trailing, spacing: 6) {
+                                    Text(activeNotification?.timeAgo ?? "now")
+                                        .font(.system(size: 12))
+                                        .foregroundStyle(.white.opacity(0.55))
+                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                        .fill(Color.white.opacity(0.15))
+                                        .frame(width: 44, height: 44)
+                                        .overlay {
+                                            if let url = URL(string: docValue), url.scheme == "https" || url.scheme == "http" {
+                                                AsyncImage(url: url) { phase in
+                                                    switch phase {
+                                                    case .success(let img):
+                                                        img.resizable().scaledToFill()
+                                                            .frame(width: 44, height: 44)
+                                                    default:
+                                                        Image(systemName: "photo")
+                                                            .font(.system(size: 18))
+                                                            .foregroundStyle(.white.opacity(0.5))
+                                                            .frame(width: 44, height: 44)
+                                                    }
+                                                }
+                                                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                            } else {
+                                                Image(systemName: docValue)
+                                                    .font(.system(size: 20))
+                                                    .foregroundStyle(.white.opacity(0.7))
+                                            }
+                                        }
+                                }
+                            } else {
+                                Text(activeNotification?.timeAgo ?? "now")
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(.white.opacity(0.55))
+                            }
                         }
-                        .padding(12)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
                     }
@@ -254,6 +299,10 @@ struct CallView: View {
     // MARK: - Show in-call notification
     private func showNextNotification() {
         guard !callNotifications.isEmpty else { return }
+        // Cancel any pending auto-dismiss before transitioning
+        dismissTask?.cancel()
+        dismissTask = nil
+
         if notifVisible {
             withAnimation(.spring(response: 0.7, dampingFraction: 0.85)) { notifVisible = false }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.65) { triggerNotif() }
@@ -268,10 +317,13 @@ struct CallView: View {
         activeNotification = notif
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) { notifVisible = true }
-        // Auto-dismiss tras 4 segundos
-        Task {
+        // Store the Task so it can be cancelled if More is tapped again
+        dismissTask = Task {
             try? await Task.sleep(nanoseconds: 4_000_000_000)
-            withAnimation(.spring(response: 0.7, dampingFraction: 0.85)) { notifVisible = false }
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                withAnimation(.spring(response: 0.7, dampingFraction: 0.85)) { notifVisible = false }
+            }
         }
     }
 
