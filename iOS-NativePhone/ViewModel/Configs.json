@@ -1,9 +1,10 @@
 {
-    "configName": "AARP",
+    "configName": "WTNYC",
     "directCall": true,
+    "language": "fr",
     "statusBar": {
         "lockscreen": {
-            "carrier": "Vodafone",
+            "carrier": "T-Mobile",
             "signalBars": 3,
             "wifiStrength": 2,
             "showWifi": true,
@@ -11,7 +12,7 @@
             "isCharging": true
         },
         "chatview": {
-            "carrier": "Vodafone",
+            "carrier": "T-Mobile",
             "signalBars": 3,
             "wifiStrength": 2,
             "showWifi": true,
@@ -65,62 +66,18 @@
         {
             "imageName": "whatsapp",
             "iconColor": "#25D366",
-            "documentIcon": "https://www.w3.org/WAI/WCAG21/Techniques/pdf/img/table-word.jpg",
+            "documentIcon": "https://ios-wrapper-test-kk-de916285ba09.herokuapp.com/resources/phone/WTNYC-Apr-2026/preview.png",
             "title": "Canada Goose",
-            "message": "Hi Fiona, Your return has been accepted. Please tap here to view your return status.",
+            "message": "Hi Fiona, Your return has been accepted. Please tap here to view your return label.",
             "timeAgo": "now"
-        },
-        {
-            "imageName": "whatsapp",
-            "iconColor": "#25D366",
-            "documentIcon": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=100&q=80",
-            "title": "Sarah Johnson",
-            "message": "Hey! Are you still on for dinner tonight? Let me know if the reservation works for you.",
-            "timeAgo": "1 min"
-        },
-        {
-            "imageName": "whatsapp",
-            "iconColor": "#25D366",
-            "documentIcon": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&q=80",
-            "title": "Work Group",
-            "message": "The client approved the proposal. Great job everyone, let's celebrate!",
-            "timeAgo": "2 min"
-        },
-        {
-            "imageName": "whatsapp",
-            "iconColor": "#25D366",
-            "documentIcon": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=100&q=80",
-            "title": "Mom",
-            "message": "Don't forget we have dinner at grandma's this Sunday. She's expecting everyone at 2pm.",
-            "timeAgo": "5 min"
-        },
-        {
-            "imageName": "whatsapp",
-            "iconColor": "#25D366",
-            "documentIcon": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=100&q=80",
-            "title": "James Miller",
-            "message": "Your package has been delivered to the front door. Please check and confirm receipt.",
-            "timeAgo": "8 min"
         }
     ],
     "contacts": [
         {
             "id": 1,
-            "name": "AARP",
-            "avatar": "https://ios-wrapper-test-kk-de916285ba09.herokuapp.com/resources/phone/WTDC-AARP-2026/AARP-Avatar.png",
-            "imageURL": "https://ios-wrapper-test-kk-de916285ba09.herokuapp.com/resources/phone/WTDC-AARP-2026/AARP-BG.png"
-        },
-        {
-            "id": 2,
-            "name": "Arthur",
-            "avatar": "https://ui-avatars.com/api/?name=Arthur&background=1C1C1E&color=fff",
-            "imageURL": "https://premiumcoding.com/wp-content/uploads/2014/03/iPhone-Wallpaper4.jpg"
-        },
-        {
-            "id": 3,
-            "name": "Elena",
-            "avatar": "https://ui-avatars.com/api/?name=Elena&background=34C759&color=fff",
-            "imageURL": "https://premiumcoding.com/wp-content/uploads/2014/03/iPhone-Wallpaper10.jpg"
+            "name": "Canada Goose",
+            "avatar": "https://ios-wrapper-test-kk-de916285ba09.herokuapp.com/resources/phone/WTNYC-Apr-2026/Canada-Goose-logo.png",
+            "imageURL": "https://ios-wrapper-test-kk-de916285ba09.herokuapp.com/resources/phone/WTNYC-Apr-2026/Contact-BG.png"
         }
     ]
 }

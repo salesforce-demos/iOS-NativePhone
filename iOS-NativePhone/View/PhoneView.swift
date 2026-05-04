@@ -14,6 +14,7 @@ struct PhoneView: View {
     @Binding var isLocked: Bool
     var onLockAction: () -> Void
 
+    @Environment(\.localizationBundle) private var bundle
     @StateObject private var vm = PhoneViewModel()
 
     @State private var currentTime = Date()
@@ -34,19 +35,20 @@ struct PhoneView: View {
                     statusBarPhoneView: vm.statusBarChatView,
                     callNotifications: vm.callNotifications
                 )
-                    .tabItem { Label("Favorites", systemImage: "star.fill") }
+                    .tabItem { Label(String(localized: "Favorites", bundle: bundle), systemImage: "star.fill") }
 
                 RecentsView()
-                    .tabItem { Label("Recents", systemImage: "clock.fill") }
+                    .tabItem { Label(String(localized: "Recents", bundle: bundle), systemImage: "clock.fill") }
 
                 ContactsView(contacts: vm.contacts)
-                    .tabItem { Label("Contacts", systemImage: "person.circle.fill") }
+                    .tabItem { Label(String(localized: "Contacts", bundle: bundle), systemImage: "person.circle.fill") }
 
                 KeypadView()
-                    .tabItem { Label("Keypad", systemImage: "circle.grid.3x3.fill") }
+                    .tabItem { Label(String(localized: "Keypad", bundle: bundle), systemImage: "circle.grid.3x3.fill") }
 
                 VoicemailView()
-                    .tabItem { Label("Voicemail", systemImage: "recordingtape") }
+                    .tabItem { Label(String(localized: "Voicemail", bundle: bundle), systemImage: "recordingtape") }
+
             }
             .tint(.blue)
 
@@ -77,6 +79,7 @@ struct FavoritesView: View {
     let statusBarPhoneView: StatusBarSettings?
     var callNotifications: [NotificationConfig] = []
 
+    @Environment(\.localizationBundle) private var bundle
     @State private var callingContact: ContactConfig? = nil
 
     var body: some View {
@@ -114,7 +117,7 @@ struct FavoritesView: View {
                                     Image(systemName: "phone")
                                         .font(.system(size: 11))
                                         .foregroundStyle(.secondary)
-                                    Text("mobile")
+                                    Text(String(localized: "mobile", bundle: bundle))
                                         .font(.system(size: 13))
                                         .foregroundStyle(.secondary)
                                 }
@@ -143,10 +146,10 @@ struct FavoritesView: View {
                 .statusBarHidden(true)
             }
             .listStyle(.plain)
-            .navigationTitle("Favorites")
+            .navigationTitle(String(localized: "Favorites", bundle: bundle))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Edit") {
+                    Button(String(localized: "Edit", bundle: bundle)) {
                         let generator = UIImpactFeedbackGenerator(style: .heavy)
                         generator.impactOccurred()
                         onLock()
@@ -162,10 +165,10 @@ struct FavoritesView: View {
                         Image(systemName: "star.slash.fill")
                             .font(.system(size: 48))
                             .foregroundStyle(.secondary)
-                        Text("No Favorites")
+                        Text(String(localized: "No Favorites", bundle: bundle))
                             .font(.title3.weight(.semibold))
                             .foregroundStyle(.secondary)
-                        Text("Add contacts to your favorites\nfor quick access.")
+                        Text(String(localized: "Add contacts to your favorites\nfor quick access.", bundle: bundle))
                             .font(.subheadline)
                             .foregroundStyle(.tertiary)
                             .multilineTextAlignment(.center)
@@ -178,15 +181,16 @@ struct FavoritesView: View {
 
 // MARK: - 2. Recents View
 struct RecentsView: View {
+    @Environment(\.localizationBundle) private var bundle
     @State private var filter = 0
 
-    let recentCalls = [
-        RecentItem(name: "Pallav Agarwal",    label: "mobile",        date: "12:42 PM",  type: .missed),
-        RecentItem(name: "Mom",               label: "home",          date: "Yesterday", type: .outgoing),
-        RecentItem(name: "Craig Federighi",   label: "work",          date: "Friday",    type: .incoming),
-        RecentItem(name: "Tim Cook",          label: "iPhone",        date: "Friday",    type: .incoming),
-        RecentItem(name: "+1 (555) 123-4567", label: "Cupertino, CA", date: "Thursday",  type: .missed)
-    ]
+    var recentCalls: [RecentItem] {[
+        RecentItem(name: "Pallav Agarwal",    label: String(localized: "mobile",    bundle: bundle), date: "12:42 PM",                                           type: .missed),
+        RecentItem(name: "Mom",               label: String(localized: "home",      bundle: bundle), date: String(localized: "Yesterday", bundle: bundle),        type: .outgoing),
+        RecentItem(name: "Craig Federighi",   label: String(localized: "work",      bundle: bundle), date: String(localized: "Friday",    bundle: bundle),        type: .incoming),
+        RecentItem(name: "Tim Cook",          label: "iPhone",                                       date: String(localized: "Friday",    bundle: bundle),        type: .incoming),
+        RecentItem(name: "+1 (555) 123-4567", label: "Cupertino, CA",                               date: String(localized: "Thursday",  bundle: bundle),        type: .missed)
+    ]}
 
     var filteredCalls: [RecentItem] {
         filter == 1 ? recentCalls.filter { $0.type == .missed } : recentCalls
@@ -232,19 +236,19 @@ struct RecentsView: View {
                 }
             }
             .listStyle(.plain)
-            .navigationTitle("Recents")
+            .navigationTitle(String(localized: "Recents", bundle: bundle))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Picker("Filter", selection: $filter) {
-                        Text("All").tag(0)
-                        Text("Missed").tag(1)
+                    Picker(String(localized: "Filter", bundle: bundle), selection: $filter) {
+                        Text(String(localized: "All", bundle: bundle)).tag(0)
+                        Text(String(localized: "Missed", bundle: bundle)).tag(1)
                     }
                     .pickerStyle(.segmented)
                     .frame(width: 180)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Edit") {}
+                    Button(String(localized: "Edit", bundle: bundle)) {}
                 }
             }
         }
@@ -264,6 +268,7 @@ struct RecentItem: Identifiable {
 @available(iOS 26.0, *)
 struct ContactsView: View {
     let contacts: [ContactConfig]
+    @Environment(\.localizationBundle) private var bundle
     @State private var searchText = ""
 
     let staticNames = ["Aaron", "Adam", "Brian", "Bob", "Charlie", "Craig Federighi", "David", "Emily", "Frank", "Greg", "Harry", "Ian", "John Appleseed", "Jony Ive", "Kate", "Larry", "Mike", "Nancy", "Oscar", "Pallav Agarwal", "Paul", "Quincy", "Rachel", "Steve Jobs", "Tim Cook", "Ursula", "Victor", "Wendy", "Xavier", "Yvonne", "Zach"]
@@ -293,7 +298,7 @@ struct ContactsView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("John Appleseed")
                                 .font(.title2).fontWeight(.semibold)
-                            Text("My Card")
+                            Text(String(localized: "My Card", bundle: bundle))
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                     }
@@ -310,10 +315,10 @@ struct ContactsView: View {
             }
             .listStyle(.plain)
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
-            .navigationTitle("Contacts")
+            .navigationTitle(String(localized: "Contacts", bundle: bundle))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Groups") {}
+                    Button(String(localized: "Groups", bundle: bundle)) {}
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {}) { Image(systemName: "plus") }
@@ -325,6 +330,7 @@ struct ContactsView: View {
 
 // MARK: - 4. Keypad View
 struct KeypadView: View {
+    @Environment(\.localizationBundle) private var bundle
     @State private var number = ""
 
     let columns = Array(repeating: GridItem(.fixed(78), spacing: 24), count: 3)
@@ -341,7 +347,7 @@ struct KeypadView: View {
                     .frame(height: 50)
                     .padding(.horizontal, 40)
 
-                Button("Add Number") {}
+                Button(String(localized: "Add Number", bundle: bundle)) {}
                     .font(.subheadline)
                     .foregroundStyle(.blue)
                     .opacity(number.isEmpty ? 0 : 1)
@@ -407,11 +413,12 @@ struct KeypadView: View {
 
 // MARK: - 5. Voicemail View
 struct VoicemailView: View {
+    @Environment(\.localizationBundle) private var bundle
     var body: some View {
         NavigationStack {
             VStack(spacing: 15) {
                 Spacer()
-                Text("Call Voicemail")
+                Text(String(localized: "Call Voicemail", bundle: bundle))
                     .font(.headline)
                     .foregroundStyle(.blue)
                     .padding(.vertical, 12)
@@ -422,10 +429,10 @@ struct VoicemailView: View {
                     )
                 Spacer()
             }
-            .navigationTitle("Voicemail")
+            .navigationTitle(String(localized: "Voicemail", bundle: bundle))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Greeting") {}
+                    Button(String(localized: "Greeting", bundle: bundle)) {}
                 }
             }
         }

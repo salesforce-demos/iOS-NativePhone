@@ -17,6 +17,8 @@ struct CallView: View {
     var callNotifications: [NotificationConfig] = []
     var notificationImages: [String: UIImage] = [:]
 
+    @Environment(\.localizationBundle) private var bundle
+
     @StateObject private var callManager = CallManager()
     @State private var isSpeaker  = false
     @State private var isMuted    = false
@@ -127,7 +129,7 @@ struct CallView: View {
                         HStack(spacing: 0) {
                             callButton(
                                 icon: isSpeaker ? "speaker.wave.3.fill" : "speaker.wave.2.fill",
-                                label: "Audio",
+                                label: String(localized: "Audio", bundle: bundle),
                                 active: isSpeaker,
                                 width: w / 3
                             ) {
@@ -135,17 +137,17 @@ struct CallView: View {
                                 try? AVAudioSession.sharedInstance()
                                     .overrideOutputAudioPort(isSpeaker ? .speaker : .none)
                             }
-                            callButton(icon: "video.fill", label: "FaceTime", active: isFaceTime, width: w / 3) {
+                            callButton(icon: "video.fill", label: String(localized: "FaceTime", bundle: bundle), active: isFaceTime, width: w / 3) {
                                 isFaceTime.toggle()
                             }
-                            callButton(icon: "mic.slash.fill", label: "Mute", active: isMuted, width: w / 3) {
+                            callButton(icon: "mic.slash.fill", label: String(localized: "Mute", bundle: bundle), active: isMuted, width: w / 3) {
                                 isMuted.toggle()
                             }
                         }
 
                         // Row 2
                         HStack(spacing: 0) {
-                            callButton(icon: "ellipsis", label: "More", width: w / 3, silent: true) {
+                            callButton(icon: "ellipsis", label: String(localized: "More", bundle: bundle), width: w / 3, silent: true) {
                                 showNextNotification()
                             }
 
@@ -160,14 +162,14 @@ struct CallView: View {
                                         .foregroundStyle(.white)
                                         .frame(width: 85, height: 85)
                                         .glassEffect(.clear.tint(.red).interactive(), in: Circle())
-                                    Text("End")
+                                    Text(String(localized: "End", bundle: bundle))
                                         .font(.system(size: 13))
                                         .foregroundStyle(.white.opacity(0.75))
                                 }
                             }
                             .frame(width: w / 3)
 
-                            callButton(icon: "circle.grid.3x3.fill", label: "Keypad", width: w / 3) {}
+                            callButton(icon: "circle.grid.3x3.fill", label: String(localized: "Keypad", bundle: bundle), width: w / 3) {}
                         }
                     }
                 }
@@ -291,9 +293,9 @@ struct CallView: View {
     @ViewBuilder
     private var callStatusText: some View {
         switch callManager.state {
-        case .ringing:   Text("Calling mobile...")
+        case .ringing:   Text(String(localized: "Calling mobile...", bundle: bundle))
         case .connected: Text(callManager.timerString)
-        case .ended:     Text("Call ended")
+        case .ended:     Text(String(localized: "Call ended", bundle: bundle))
         }
     }
 

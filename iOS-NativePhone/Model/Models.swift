@@ -11,6 +11,7 @@ import Foundation
 struct AppConfig: Codable {
     let configName: String
     let directCall: Bool?
+    let language: String?   // "en", "fr", etc. Overrides system locale when present.
     let statusBar: StatusBarConfig?
     let notifications: [NotificationConfig]?
     let callNotifications: [NotificationConfig]?

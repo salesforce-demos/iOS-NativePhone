@@ -59,12 +59,12 @@ class LockScreenViewModel: ObservableObject {
         let config = notificationConfigs.randomElement()!
         
         let newNotif = LockScreenNotification(
-            appName: config.appName ?? "App",
+            appName: config.appName ?? String(localized: "App"),
             iconName: config.iconName ?? "app.fill",
             iconColor: parseColor(config.iconColor ?? "#007AFF"),
-            title: config.title ?? "Notification",
+            title: config.title ?? String(localized: "Notification"),
             message: config.message ?? "",
-            timeAgo: config.timeAgo ?? "ahora"
+            timeAgo: config.timeAgo ?? String(localized: "now")
         )
         
         withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {

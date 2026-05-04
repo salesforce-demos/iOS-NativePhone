@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct RootView: View {
+    @EnvironmentObject private var appLanguage: AppLanguage
     @StateObject private var lockVM = LockScreenViewModel()
     @State private var lockScreenOffset: CGFloat = 0
     @State private var isLocked: Bool = true
@@ -60,6 +61,7 @@ struct RootView: View {
                         await handleConfirm(url: url)
                     }
                 )
+                .environment(\.locale, .init(identifier: "en")) // Always English — language comes from JSON
                 .transition(.opacity)
                 .zIndex(2)
             } else {
@@ -114,9 +116,12 @@ struct RootView: View {
             }
         }
         
+        print("[RootView] language field from JSON: \(config?.language ?? "nil")")
+
         guard let config, config.directCall == true,
               let firstContact = config.contacts?.first else {
-            // No directCall: ir al flujo normal
+            // No directCall: ir al flujo normal — aplicar idioma antes de mostrar PhoneView
+            appLanguage.apply(config?.language)
             withAnimation(.easeInOut(duration: 0.3)) { isConfigured = true }
             return
         }
@@ -131,7 +136,8 @@ struct RootView: View {
         async let notifFetch: Void = fetchNotificationImages(for: config.callNotifications ?? [])
         _ = await (bgFetch, notifFetch)
 
-        // Todo listo: transición directa a CallView
+        // Todo listo: aplicar idioma y hacer transición directa a CallView
+        appLanguage.apply(config.language)
         isConfigured = true
         withAnimation(.easeIn(duration: 0.3)) {
             isDirectCall = true

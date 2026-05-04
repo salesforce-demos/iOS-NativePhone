@@ -73,13 +73,13 @@ struct URLConfigurationView: View {
             // Center buttons
             HStack(spacing: 16) {
                 Button(action: {}) {
-                    Text("ALL")
+                    Text("ALL", comment: "Show all search results")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(.blue)
                 }
                 
                 Button(action: {}) {
-                    Text("IMAGES")
+                    Text("IMAGES", comment: "Show image search results")
                         .font(.system(size: 14, weight: .medium))
                         .foregroundColor(.gray)
                 }
@@ -102,7 +102,7 @@ struct URLConfigurationView: View {
                 }
                 
                 Button(action: {}) {
-                    Text("SignIn")
+                    Text("SignIn", comment: "Sign in button")
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.white)
                         .padding(.horizontal, 14)
@@ -139,7 +139,7 @@ struct URLConfigurationView: View {
             .disabled(isSearching)
             
             // Text field
-            TextField("", text: $inputURL, prompt: Text("Search").foregroundColor(.gray.opacity(0.6)))
+            TextField("", text: $inputURL, prompt: Text("Search", comment: "Search field placeholder").foregroundColor(.gray.opacity(0.6)))
                 .font(.system(size: 15))
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
@@ -191,25 +191,25 @@ struct URLConfigurationView: View {
             // First row
             HStack(spacing: 16) {
                 Button(action: {}) {
-                    Text("Dark theme: off")
+                    Text("Dark theme: off", comment: "Toggle dark theme button label")
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }
                 
                 Button(action: {}) {
-                    Text("Settings")
+                    Text("Settings", comment: "Settings link")
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }
                 
                 Button(action: {}) {
-                    Text("Privacy")
+                    Text("Privacy", comment: "Privacy link")
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }
                 
                 Button(action: {}) {
-                    Text("Terms")
+                    Text("Terms", comment: "Terms link")
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }
@@ -218,19 +218,19 @@ struct URLConfigurationView: View {
             // Second row
             HStack(spacing: 16) {
                 Button(action: {}) {
-                    Text("Advertising")
+                    Text("Advertising", comment: "Advertising link")
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }
                 
                 Button(action: {}) {
-                    Text("Business")
+                    Text("Business", comment: "Business link")
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }
                 
                 Button(action: {}) {
-                    Text("About")
+                    Text("About", comment: "About link")
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }

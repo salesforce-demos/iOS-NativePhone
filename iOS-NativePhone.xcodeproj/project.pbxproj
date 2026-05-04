@@ -25,6 +25,8 @@
 		62B84DB52F61C3DE00045C3D /* URLConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B84DB42F61C3DE00045C3D /* URLConfigurationView.swift */; };
 		62B84DD12F62525F00045C3D /* Configs.json in Resources */ = {isa = PBXBuildFile; fileRef = 62B84DD02F62525F00045C3D /* Configs.json */; };
 		62B84DE12F6D9C2300045C3D /* PhoneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B84DE02F6D9C2300045C3D /* PhoneViewModel.swift */; };
+		62EBD0B92FA3D10A00EA2B93 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62EBD0B82FA3D10A00EA2B93 /* AppLanguage.swift */; };
+		62EBD0BB2FA8F09800EA2B93 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 62EBD0BA2FA8F09800EA2B93 /* Localizable.xcstrings */; };
 		FD92C01B64FC40DDB33DAB65 /* ringing.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 2CCD7783387A48C2B42C2B32 /* ringing.m4a */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +51,8 @@
 		62B84DB42F61C3DE00045C3D /* URLConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLConfigurationView.swift; sourceTree = "<group>"; };
 		62B84DD02F62525F00045C3D /* Configs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Configs.json; sourceTree = "<group>"; };
 		62B84DE02F6D9C2300045C3D /* PhoneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneViewModel.swift; sourceTree = "<group>"; };
+		62EBD0B82FA3D10A00EA2B93 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
+		62EBD0BA2FA8F09800EA2B93 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -93,6 +97,7 @@
 				18E24B212F3F7A1D007B6764 /* NativeApp.swift */,
 				18E24B252F3F7A21007B6764 /* Assets.xcassets */,
 				18E24B272F3F7A21007B6764 /* Preview Content */,
+				62EBD0BA2FA8F09800EA2B93 /* Localizable.xcstrings */,
 			);
 			path = "iOS-NativePhone";
 			sourceTree = "<group>";
@@ -120,6 +125,7 @@
 				18E24B372F3F7AD7007B6764 /* LockScreenViewModel.swift */,
 				620674EA2F6DBE230031E1E4 /* CallManager.swift */,
 				62B84DD02F62525F00045C3D /* Configs.json */,
+				62EBD0B82FA3D10A00EA2B93 /* AppLanguage.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -211,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18E24B292F3F7A21007B6764 /* Preview Assets.xcassets in Resources */,
+				62EBD0BB2FA8F09800EA2B93 /* Localizable.xcstrings in Resources */,
 				62B84DD12F62525F00045C3D /* Configs.json in Resources */,
 				18E24B262F3F7A21007B6764 /* Assets.xcassets in Resources */,
 				FD92C01B64FC40DDB33DAB65 /* ringing.m4a in Resources */,
@@ -236,6 +243,7 @@
 				18E24B3F2F3F7B27007B6764 /* LockScreenView.swift in Sources */,
 				620674EB2F6DBE230031E1E4 /* CallManager.swift in Sources */,
 				62B84DE12F6D9C2300045C3D /* PhoneViewModel.swift in Sources */,
+				62EBD0B92FA3D10A00EA2B93 /* AppLanguage.swift in Sources */,
 				18E24B382F3F7AD7007B6764 /* LockScreenViewModel.swift in Sources */,
 				629B50AF2F44BF61004DA746 /* LockScreenButton.swift in Sources */,
 				18E24B222F3F7A1D007B6764 /* NativeApp.swift in Sources */,
